@@ -52,8 +52,8 @@ func main() {
 			page, err := p.NextPage(ctx)
 			if err != nil {
 				tofo.LogErr("ListObjectsV2", err)
-				glog.Error("Failed to list objects in bucket %s: %s\n",
-					bucket.Name, err)
+				glog.Errorf("Failed to list objects in bucket %s: %v",
+					aws.ToString(bucket.Name), err)
 				return
 			}
 			for _, obj := range page.Contents {
