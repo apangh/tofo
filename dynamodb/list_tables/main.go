@@ -25,7 +25,7 @@ func main() {
 	config, err := config.LoadDefaultConfig(ctx,
 		config.WithSharedConfigProfile("administrator"))
 	if err != nil {
-		glog.Errorf("Failed to list dynamodb tables: %s\n", err)
+		glog.Errorf("Failed to list dynamodb tables: %s", err)
 		return
 	}
 	client := dynamodb.NewFromConfig(config)
@@ -43,7 +43,7 @@ func main() {
 		o, err := client.ListTables(ctx, params)
 		if err != nil {
 			tofo.LogErr("ListTables", err)
-			glog.Errorf("Failed to list tables: %s\n", err)
+			glog.Errorf("Failed to list tables: %s", err)
 			return
 		}
 		for _, tName := range o.TableNames {
