@@ -5,17 +5,21 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/golang/glog"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 )
 
-func ListObjects(ctx context.Context, client *s3.Client, bucketName string) error {
+type ListObjectsCB interface {
+	Do(ctx context.Context, o types.Object) error
+}
+
+func ListObjects(ctx context.Context, client *s3.Client, bucketName string,
+	cb ListObjectsCB) error {
 	params := &s3.ListObjectsV2Input{
 		Bucket:     aws.String(bucketName),
 		FetchOwner: true,
 		MaxKeys:    1000,
 	}
 
-	var i int
 	p := s3.NewListObjectsV2Paginator(client, params)
 	for p.HasMorePages() {
 		page, err := p.NextPage(ctx)
@@ -23,12 +27,9 @@ func ListObjects(ctx context.Context, client *s3.Client, bucketName string) erro
 			return err
 		}
 		for _, obj := range page.Contents {
-			glog.Infof("[%d] Object: %s, %s, %v, %s, %s, %d, %v", i,
-				aws.ToString(obj.Key), aws.ToString(obj.ETag),
-				obj.LastModified, aws.ToString(obj.Owner.DisplayName),
-				aws.ToString(obj.Owner.ID), obj.Size,
-				obj.StorageClass)
-			i++
+			if e := cb.Do(ctx, obj); e != nil {
+				return e
+			}
 		}
 	}
 	return nil
