@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/apangh/tofo"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/golang/glog"
@@ -38,7 +39,7 @@ func main() {
 		return
 	}
 	for i, bucket := range o.Buckets {
-		glog.Infof("Bucket[%d] %s %v", i, *bucket.Name,
+		glog.Infof("Bucket[%d] %s %v", i, aws.ToString(bucket.Name),
 			bucket.CreationDate)
 		params := &s3.ListObjectsV2Input{
 			Bucket:     bucket.Name,
@@ -57,14 +58,17 @@ func main() {
 			}
 			for _, obj := range page.Contents {
 				glog.Infof("[%d] Object: %s, %s, %v, %s, %s, %d, %v", j,
-					*obj.Key, *obj.ETag, obj.LastModified,
-					*obj.Owner.DisplayName, *obj.Owner.ID, obj.Size,
+					aws.ToString(obj.Key), aws.ToString(obj.ETag),
+					obj.LastModified,
+					aws.ToString(obj.Owner.DisplayName),
+					aws.ToString(obj.Owner.ID), obj.Size,
 					obj.StorageClass)
 				i++
 			}
 		}
 	}
-	glog.Infof("Owner: %s %s", *o.Owner.DisplayName, *o.Owner.ID)
+	glog.Infof("Owner: %s %s", aws.ToString(o.Owner.DisplayName),
+		aws.ToString(o.Owner.ID))
 	glog.Infof("Metadata: %v", o.ResultMetadata)
 
 	return
