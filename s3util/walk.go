@@ -19,7 +19,9 @@ func Walk(ctx context.Context, client *s3.Client) error {
 		glog.Infof("Bucket[%d] %s %v", i, aws.ToString(bucket.Name),
 			bucket.CreationDate)
 
-		e := ListObjects(ctx, client, aws.ToString(bucket.Name))
+		l := &LogObject{}
+
+		e := ListObjects(ctx, client, aws.ToString(bucket.Name), l)
 		if e != nil {
 			return e
 		}
