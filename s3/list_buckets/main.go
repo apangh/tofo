@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/apangh/tofo"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/golang/glog"
@@ -38,10 +39,11 @@ func main() {
 		return
 	}
 	for i, bucket := range o.Buckets {
-		glog.Infof("Bucket[%d] %s %v", i, *bucket.Name,
+		glog.Infof("Bucket[%d] %s %v", i, aws.ToString(bucket.Name),
 			bucket.CreationDate)
 	}
-	glog.Infof("Owner: %s %s", *o.Owner.DisplayName, *o.Owner.ID)
+	glog.Infof("Owner: %s %s", aws.ToString(o.Owner.DisplayName),
+		aws.ToString(o.Owner.ID))
 	glog.Infof("Metadata: %v", o.ResultMetadata)
 
 	return
