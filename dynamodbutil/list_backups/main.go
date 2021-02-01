@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/apangh/tofo"
-	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/apangh/tofo/dynamodbutil"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/golang/glog"
@@ -31,39 +31,13 @@ func main() {
 	client := dynamodb.NewFromConfig(config)
 	tableName := "Hello"
 
-	var i int
-	var exclusiveStartBackupArn *string
-	for {
-		params := &dynamodb.ListBackupsInput{
-			ExclusiveStartBackupArn: exclusiveStartBackupArn,
-			Limit:                   aws.Int32(100),
-			TableName:               aws.String(tableName),
-		}
+	var cb dynamodbutil.LogBackupSummary
 
-		o, err := client.ListBackups(ctx, params)
-		if err != nil {
-			tofo.LogErr("ListBackups", err)
-			glog.Errorf("Failed to list backups: %s", err)
-			return
-		}
-
-		for _, summary := range o.BackupSummaries {
-			glog.Infof("Backup[%d] %s %s %v %v %d %v %v", i,
-				aws.ToString(summary.BackupArn),
-				aws.ToString(summary.BackupName),
-				summary.BackupCreationDateTime,
-				summary.BackupExpiryDateTime,
-				aws.ToInt64(summary.BackupSizeBytes),
-				summary.BackupStatus,
-				summary.BackupType)
-			i++
-		}
-
-		if o.LastEvaluatedBackupArn == nil {
-			break
-		}
-		exclusiveStartBackupArn = o.LastEvaluatedBackupArn
+	e := dynamodbutil.ListBackup(ctx, client, tableName, &cb)
+	if e != nil {
+		tofo.LogErr("ListBackups", err)
+		glog.Errorf("Failed to list backups: %s", err)
+		return
 	}
-
 	return
 }

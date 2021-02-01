@@ -30,12 +30,10 @@ func main() {
 	}
 	client := dynamodb.NewFromConfig(config)
 
-	var cb dynamodbutil.LogTableName
-
-	e := dynamodbutil.ListTables(ctx, client, &cb)
+	e := dynamodbutil.Walk(ctx, client)
 	if e != nil {
 		tofo.LogErr("ListTables", err)
-		glog.Errorf("Failed to list tables: %s", err)
+		glog.Errorf("Failed to walk tables: %s", err)
 		return
 	}
 
