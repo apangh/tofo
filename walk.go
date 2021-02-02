@@ -5,9 +5,11 @@ import (
 
 	"github.com/apangh/tofo/dynamodbutil"
 	"github.com/apangh/tofo/s3util"
+	"github.com/apangh/tofo/sqsutil"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/sqs"
 )
 
 func Walk(ctx context.Context, cfg aws.Config) error {
@@ -15,6 +17,9 @@ func Walk(ctx context.Context, cfg aws.Config) error {
 		return e
 	}
 	if e := s3util.Walk(ctx, s3.NewFromConfig(cfg)); e != nil {
+		return e
+	}
+	if e := sqsutil.Walk(ctx, sqs.NewFromConfig(cfg)); e != nil {
 		return e
 	}
 	return nil
