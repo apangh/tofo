@@ -10,6 +10,8 @@ github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.0.0 h1:lO7fH5n7Q1dKcDBpuTmwJylD
 github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.0.0/go.mod h1:wpMHDCXvOXZxGCRSidyepa8uJHY4vaBGfY2/+oKU/Bc=
 github.com/aws/aws-sdk-go-v2/service/dynamodb v1.1.0 h1:ASFP1a8DHhp1oioDKa2z+oMG8sVxtWwcdIKVXIRUnjg=
 github.com/aws/aws-sdk-go-v2/service/dynamodb v1.1.0/go.mod h1:WSLgzspK5prWKm/2JShm+DE2TSQSoZfVuRo4gfrFZgY=
+github.com/aws/aws-sdk-go-v2/service/iam v1.1.0 h1:iQ+xe9a2K70/6RbZPc/ANuy+cI8Q6Ya4xL4yIbcAuU4=
+github.com/aws/aws-sdk-go-v2/service/iam v1.1.0/go.mod h1:e+on0FWvO5ommIlztsVMOy7tZR5uY7CVUvvLMRtR9b8=
 github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.0.0 h1:jjZzz89+Uii7XKlgWXNHiLVtJfvCG8oVoMLpiWsjnt8=
 github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.0.0/go.mod h1:cZbnzYflIuoRkuKp4BB4q/R4xklYIwpLYs26vS3/Sac=
 github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.0.0 h1:IAutMPSrynpvKOpHG6HyWHmh1xmxWAmYOK84NrQVqVQ=
