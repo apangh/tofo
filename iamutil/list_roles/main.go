@@ -25,17 +25,17 @@ func main() {
 	config, err := config.LoadDefaultConfig(ctx,
 		config.WithSharedConfigProfile("administrator"))
 	if err != nil {
-		glog.Errorf("Failed to list buckets: %s\n", err)
+		glog.Errorf("Failed to list roles: %s", err)
 		return
 	}
 	client := iam.NewFromConfig(config)
 
-	l := &iamutil.LogUser{}
+	l := &iamutil.LogRole{}
 
-	e := iamutil.ListUsers(ctx, client, l)
+	e := iamutil.ListRoles(ctx, client, l)
 	if e != nil {
 		tofo.LogErr("ListUsers", e)
-		glog.Errorf("Failed to list users: %v", e)
+		glog.Errorf("Failed to list rolesRoles: %v", e)
 		return
 	}
 }

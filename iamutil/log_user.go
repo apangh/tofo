@@ -15,9 +15,10 @@ type LogUser struct {
 }
 
 func (l *LogUser) Do(ctx context.Context, u types.User) error {
-	glog.Infof("%s %v %s %s %s %v %v %v", aws.ToString(u.Arn), u.CreateDate,
-		aws.ToString(u.Path), aws.ToString(u.UserId), aws.ToString(u.UserName),
-		u.PasswordLastUsed, u.PermissionsBoundary, u.Tags)
+	glog.Infof("User[%d] %s %v %s %s %s %v %v %v", l.i,
+		aws.ToString(u.Arn), u.CreateDate, aws.ToString(u.Path),
+		aws.ToString(u.UserId), aws.ToString(u.UserName), u.PasswordLastUsed,
+		u.PermissionsBoundary, u.Tags)
 	l.i++
 	return nil
 }
