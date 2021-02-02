@@ -7,6 +7,11 @@ import (
 )
 
 func Walk(ctx context.Context, client *iam.Client) error {
-	var cb LogUser
-	return ListUsers(ctx, client, &cb)
+	if e := ListUsers(ctx, client, &LogUser{}); e != nil {
+		return e
+	}
+	if e := ListRoles(ctx, client, &LogRole{}); e != nil {
+		return e
+	}
+	return nil
 }
