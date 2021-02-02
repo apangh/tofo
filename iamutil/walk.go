@@ -13,5 +13,8 @@ func Walk(ctx context.Context, client *iam.Client) error {
 	if e := ListRoles(ctx, client, &LogRole{}); e != nil {
 		return e
 	}
+	if e := ListGroups(ctx, client, &LogGroup{}); e != nil {
+		return e
+	}
 	return nil
 }

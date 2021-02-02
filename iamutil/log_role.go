@@ -15,7 +15,7 @@ type LogRole struct {
 }
 
 func (l *LogRole) Do(ctx context.Context, u types.Role) error {
-	glog.Infof("%s %v %s %s %s %s %s %d %v %v %v",
+	glog.Infof("Role[%d] %s %v %s %s %s %s %s %d %v %v %v", l.i,
 		aws.ToString(u.Arn), u.CreateDate,
 		aws.ToString(u.Path), aws.ToString(u.RoleId),
 		aws.ToString(u.RoleName),
