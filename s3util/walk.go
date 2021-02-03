@@ -5,54 +5,8 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/golang/glog"
 )
-
-var _ ListMultiPartUploadsCB = (*LogPartInMultiPartUpload)(nil)
-
-type LogPartInMultiPartUpload struct {
-	LogMultiPartUpload
-	client *s3.Client
-	bucket string
-}
-
-func (l *LogPartInMultiPartUpload) Do(ctx context.Context, o types.MultipartUpload) error {
-	if e := l.LogMultiPartUpload.Do(ctx, o); e != nil {
-		return e
-	}
-	return ListParts(ctx, l.client, l.bucket, aws.ToString(o.Key),
-		aws.ToString(o.UploadId), &LogPart{})
-}
-
-type LogInventoryConfiguration struct {
-	i int
-}
-
-func (l *LogInventoryConfiguration) Do(ctx context.Context,
-	c types.InventoryConfiguration) error {
-	glog.Infof("IC[%d] %s %v %s %v %s %s %v %v %v %v %v", l.i,
-		aws.ToString(c.Destination.S3BucketDestination.Bucket),
-		c.Destination.S3BucketDestination.Format,
-		aws.ToString(c.Destination.S3BucketDestination.AccountId),
-		c.Destination.S3BucketDestination.Encryption,
-		aws.ToString(c.Destination.S3BucketDestination.Prefix),
-		aws.ToString(c.Id), c.IncludedObjectVersions, c.IsEnabled, c.Schedule,
-		c.Filter, c.OptionalFields)
-	l.i++
-	return nil
-}
-
-type LogMetricsConfiguration struct {
-	i int
-}
-
-func (l *LogMetricsConfiguration) Do(ctx context.Context,
-	c types.MetricsConfiguration) error {
-	glog.Infof("MC[%d] %+v", l.i, c)
-	l.i++
-	return nil
-}
 
 func Walk(ctx context.Context, client *s3.Client) error {
 	params := &s3.ListBucketsInput{}

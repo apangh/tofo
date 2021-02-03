@@ -12,7 +12,7 @@
 *.out
 
 # vi swap files
-*.go.swap
+*/*.go.swap
 
 # Dependency directories (remove the comment below to include it)
 vendor/
