@@ -32,10 +32,10 @@ func main() {
 
 	bucketName := "test-bucket-46709394-abcd-1112233"
 
-	e := s3util.ListObjects(ctx, client, bucketName, &s3util.LogObject{})
+	e := s3util.ListObjectVersions(ctx, client, bucketName, &s3util.LogObjectVersion{})
 	if e != nil {
-		tofo.LogErr("ListObjects", e)
-		glog.Errorf("Failed to list objects in bucket %s: %v",
+		tofo.LogErr("ListObjectVersions", e)
+		glog.Errorf("Failed to list object versions in bucket %s: %v",
 			bucketName, e)
 		return
 	}
