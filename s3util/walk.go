@@ -5,8 +5,25 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/golang/glog"
 )
+
+var _ ListMultiPartUploadsCB = (*LogPartInMultiPartUpload)(nil)
+
+type LogPartInMultiPartUpload struct {
+	LogMultiPartUpload
+	client *s3.Client
+	bucket string
+}
+
+func (l *LogPartInMultiPartUpload) Do(ctx context.Context, o types.MultipartUpload) error {
+	if e := l.LogMultiPartUpload.Do(ctx, o); e != nil {
+		return e
+	}
+	return ListParts(ctx, l.client, l.bucket, aws.ToString(o.Key),
+		aws.ToString(o.UploadId), &LogPart{})
+}
 
 func Walk(ctx context.Context, client *s3.Client) error {
 	params := &s3.ListBucketsInput{}
@@ -29,8 +46,11 @@ func Walk(ctx context.Context, client *s3.Client) error {
 		if e != nil {
 			return e
 		}
-		e = ListMultiPartUploads(ctx, client, aws.ToString(bucket.Name),
-			&LogMultiPartUpload{})
+		cb := LogPartInMultiPartUpload{
+			client: client,
+			bucket: aws.ToString(bucket.Name),
+		}
+		e = ListMultiPartUploads(ctx, client, aws.ToString(bucket.Name), &cb)
 		if e != nil {
 			return e
 		}
