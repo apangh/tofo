@@ -29,6 +29,11 @@ func Walk(ctx context.Context, client *s3.Client) error {
 		if e != nil {
 			return e
 		}
+		e = ListMultiPartUploads(ctx, client, aws.ToString(bucket.Name),
+			&LogMultiPartUpload{})
+		if e != nil {
+			return e
+		}
 	}
 	glog.Infof("Owner: %s %s", aws.ToString(o.Owner.DisplayName),
 		aws.ToString(o.Owner.ID))
