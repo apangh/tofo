@@ -43,6 +43,17 @@ func (l *LogInventoryConfiguration) Do(ctx context.Context,
 	return nil
 }
 
+type LogMetricsConfiguration struct {
+	i int
+}
+
+func (l *LogMetricsConfiguration) Do(ctx context.Context,
+	c types.MetricsConfiguration) error {
+	glog.Infof("MC[%d] %+v", l.i, c)
+	l.i++
+	return nil
+}
+
 func Walk(ctx context.Context, client *s3.Client) error {
 	params := &s3.ListBucketsInput{}
 
@@ -58,6 +69,15 @@ func Walk(ctx context.Context, client *s3.Client) error {
 
 		e := ListBucketInventoryConfigurations(ctx, client, bucketName,
 			&LogInventoryConfiguration{})
+		if e != nil {
+			return e
+		}
+
+		e = ListBucketMetricsConfigurations(ctx, client, bucketName,
+			&LogMetricsConfiguration{})
+		if e != nil {
+			return e
+		}
 
 		// bucket logging
 		l, e := client.GetBucketLogging(ctx,
