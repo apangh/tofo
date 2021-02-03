@@ -27,6 +27,18 @@ func Walk(ctx context.Context, client *s3.Client) error {
 			return e
 		}
 
+		e = ListBucketAnalyticsConfigurations(ctx, client, bucketName,
+			&LogAnalyticsConfigurationCB{})
+		if e != nil {
+			return e
+		}
+
+		e = ListBucketIntelligentTieringConfigurations(ctx, client, bucketName,
+			&LogIntelligentTieringConfigurationCB{})
+		if e != nil {
+			return e
+		}
+
 		e = ListBucketMetricsConfigurations(ctx, client, bucketName,
 			&LogMetricsConfiguration{})
 		if e != nil {

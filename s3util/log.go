@@ -9,6 +9,32 @@ import (
 	"github.com/golang/glog"
 )
 
+var _ ListBucketAnalyticsConfigurationsCB = (*LogAnalyticsConfigurationCB)(nil)
+
+type LogAnalyticsConfigurationCB struct {
+	i int
+}
+
+func (l *LogAnalyticsConfigurationCB) Do(ctx context.Context,
+	c types.AnalyticsConfiguration) error {
+	glog.Infof("[%d] AC: %+v", l.i, c)
+	l.i++
+	return nil
+}
+
+var _ ListBucketIntelligentTieringConfigurationsCB = (*LogIntelligentTieringConfigurationCB)(nil)
+
+type LogIntelligentTieringConfigurationCB struct {
+	i int
+}
+
+func (l *LogIntelligentTieringConfigurationCB) Do(ctx context.Context,
+	c types.IntelligentTieringConfiguration) error {
+	glog.Infof("[%d] ITC: %+v", l.i, c)
+	l.i++
+	return nil
+}
+
 var _ ListPartsCB = (*LogPart)(nil)
 
 type LogPart struct {
