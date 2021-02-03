@@ -19,9 +19,13 @@ func Walk(ctx context.Context, client *s3.Client) error {
 		glog.Infof("Bucket[%d] %s %v", i, aws.ToString(bucket.Name),
 			bucket.CreationDate)
 
-		l := &LogObject{}
+		e = ListObjects(ctx, client, aws.ToString(bucket.Name), &LogObject{})
+		if e != nil {
+			return e
+		}
 
-		e := ListObjects(ctx, client, aws.ToString(bucket.Name), l)
+		e = ListObjectVersions(ctx, client, aws.ToString(bucket.Name),
+			&LogObjectVersion{})
 		if e != nil {
 			return e
 		}
