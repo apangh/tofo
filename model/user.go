@@ -12,9 +12,10 @@ type User struct {
 	Path               string
 	Arn                string
 	CreateDate         *time.Time
-	PasswordLastUsed   *time.Time
 	Tags               map[string]string
-	PermissionBoundary string // TODO
+	PermissionBoundary *Policy
+
+	PasswordLastUsed *time.Time
 }
 
 var (
