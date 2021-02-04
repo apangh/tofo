@@ -40,4 +40,7 @@ func main() {
 		glog.Errorf("Failed to walk: %s", e)
 		return
 	}
+
+	// dump the states in ORM
+	orm.Dump(ctx)
 }

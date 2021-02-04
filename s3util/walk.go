@@ -16,11 +16,24 @@ func Walk(ctx context.Context, client *s3.Client, orm *model.ORM) error {
 	if e != nil {
 		return e
 	}
-	glog.Infof("Owner: %s %s", aws.ToString(o.Owner.DisplayName), aws.ToString(o.Owner.ID))
-	for i, bucket := range o.Buckets {
+
+	account := toAccount(*o.Owner)
+	if e := orm.AccountModel.Insert(ctx, account); e != nil {
+		return e
+	}
+
+	bucketRecorder := &BucketRecorder{
+		orm:     orm,
+		account: account,
+	}
+
+	for _, bucket := range o.Buckets {
+		b, e := bucketRecorder.Do(ctx, bucket)
+		if e != nil {
+			return e
+		}
 
 		bucketName := aws.ToString(bucket.Name)
-		glog.Infof("Bucket[%d] %s %v", i, bucketName, bucket.CreationDate)
 
 		e := ListBucketInventoryConfigurations(ctx, client, bucketName,
 			&LogInventoryConfiguration{})

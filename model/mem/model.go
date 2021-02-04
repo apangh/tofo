@@ -4,7 +4,8 @@ import "github.com/apangh/tofo/model"
 
 func NewORM() (*model.ORM, error) {
 	return &model.ORM{
-		BucketModel: &BucketModelMem{},
-		UserModel:   &UserModelMem{},
+		BucketModel:  NewBucketModel(),
+		UserModel:    NewUserModel(),
+		AccountModel: NewAccountModel(),
 	}, nil
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"sync"
-	"time"
 
 	"github.com/apangh/tofo/model"
 )
@@ -16,22 +15,30 @@ type BucketModelMem struct {
 
 var _ model.BucketModel = (*BucketModelMem)(nil)
 
-func (m *BucketModelMem) Insert(ctx context.Context, name string,
-	creationDate time.Time, owner *model.User) (*model.Bucket, error) {
+func NewBucketModel() model.BucketModel {
+	return &BucketModelMem{
+		buckets: make(map[string]*model.Bucket),
+	}
+}
+
+func (m *BucketModelMem) Dump(ctx context.Context) {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
-	_, ok := m.buckets[name]
+	for k, v := range m.buckets {
+		fmt.Printf("Bucket[%s]:%+v\n", k, v)
+	}
+}
+
+func (m *BucketModelMem) Insert(ctx context.Context, b *model.Bucket) error {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	_, ok := m.buckets[b.Name]
 	if ok {
-		return nil, fmt.Errorf("%w: Bucket %s already exists",
-			model.BucketAlreadyExist, name)
+		return fmt.Errorf("%w: Bucket %s already exists",
+			model.BucketAlreadyExist, b.Name)
 	}
-	b := &model.Bucket{
-		Name:         name,
-		CreationDate: creationDate,
-		Owner:        owner,
-	}
-	m.buckets[name] = b
-	return b, nil
+	m.buckets[b.Name] = b
+	return nil
 }
 
 func (m *BucketModelMem) Lookup(ctx context.Context, name string) (

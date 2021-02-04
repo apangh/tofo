@@ -8,7 +8,7 @@ import (
 )
 
 func Walk(ctx context.Context, client *iam.Client, orm *model.ORM) error {
-	if e := ListUsers(ctx, client, &LogUser{}); e != nil {
+	if e := ListUsers(ctx, client, &UserRecorder{orm: orm}); e != nil {
 		return e
 	}
 	if e := ListRoles(ctx, client, &LogRole{}); e != nil {

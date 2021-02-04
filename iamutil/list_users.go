@@ -8,11 +8,11 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
 
-type ListUsersCB interface {
+type UserCB interface {
 	Do(ctx context.Context, user types.User) error
 }
 
-func ListUsers(ctx context.Context, client *iam.Client, cb ListUsersCB) error {
+func ListUsers(ctx context.Context, client *iam.Client, cb UserCB) error {
 	params := &iam.ListUsersInput{
 		MaxItems: aws.Int32(100),
 	}
