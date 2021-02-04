@@ -15,6 +15,20 @@ type UserModelMem struct {
 
 var _ model.UserModel = (*UserModelMem)(nil)
 
+func NewUserModel() model.UserModel {
+	return &UserModelMem{
+		id2User: make(map[string]*model.User),
+	}
+}
+
+func (m *UserModelMem) Dump(ctx context.Context) {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	for k, v := range m.id2User {
+		fmt.Printf("User[%s]:%+v\n", k, v)
+	}
+}
+
 func (m *UserModelMem) Lookup(ctx context.Context, id string) (
 	*model.User, error) {
 	m.mutex.Lock()
@@ -27,19 +41,14 @@ func (m *UserModelMem) Lookup(ctx context.Context, id string) (
 		model.UserNotFound, id)
 }
 
-func (m *UserModelMem) Insert(ctx context.Context, id, displayName string) (
-	*model.User, error) {
+func (m *UserModelMem) Insert(ctx context.Context, u *model.User) error {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
-	_, ok := m.id2User[id]
+	_, ok := m.id2User[u.Id]
 	if ok {
-		return nil, fmt.Errorf("%w: User %s/%s already exists",
-			model.UserAlreadyExists, id, displayName)
+		return fmt.Errorf("%w: User %s already exists",
+			model.UserAlreadyExists, u.Id)
 	}
-	u := &model.User{
-		Id:          id,
-		DisplayName: displayName,
-	}
-	m.id2User[id] = u
-	return u, nil
+	m.id2User[u.Id] = u
+	return nil
 }

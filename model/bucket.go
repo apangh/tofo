@@ -9,7 +9,7 @@ import (
 type Bucket struct {
 	Name         string
 	CreationDate time.Time
-	Owner        *User
+	Account      *Account
 }
 
 var (
@@ -18,7 +18,7 @@ var (
 )
 
 type BucketModel interface {
-	Insert(ctx context.Context, name string, creationDate time.Time,
-		owner *User) (*Bucket, error)
+	Insert(ctx context.Context, b *Bucket) error
 	Lookup(ctx context.Context, name string) (*Bucket, error)
+	Dump(ctx context.Context)
 }

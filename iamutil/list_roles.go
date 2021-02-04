@@ -8,11 +8,11 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
 
-type ListRolesCB interface {
+type RoleCB interface {
 	Do(ctx context.Context, role types.Role) error
 }
 
-func ListRoles(ctx context.Context, client *iam.Client, cb ListRolesCB) error {
+func ListRoles(ctx context.Context, client *iam.Client, cb RoleCB) error {
 	params := &iam.ListRolesInput{
 		MaxItems: aws.Int32(100),
 	}

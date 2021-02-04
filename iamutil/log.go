@@ -8,7 +8,7 @@ import (
 	"github.com/golang/glog"
 )
 
-var _ ListGroupsCB = (*LogGroup)(nil)
+var _ GroupCB = (*LogGroup)(nil)
 
 type LogGroup struct {
 	i int
@@ -21,7 +21,7 @@ func (l *LogGroup) Do(ctx context.Context, g types.Group) error {
 	return nil
 }
 
-var _ ListRolesCB = (*LogRole)(nil)
+var _ RoleCB = (*LogRole)(nil)
 
 type LogRole struct {
 	i int
@@ -42,7 +42,7 @@ func (l *LogRole) Do(ctx context.Context, u types.Role) error {
 	return nil
 }
 
-var _ ListUsersCB = (*LogUser)(nil)
+var _ UserCB = (*LogUser)(nil)
 
 type LogUser struct {
 	i int

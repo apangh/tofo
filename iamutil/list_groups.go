@@ -8,11 +8,11 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
 
-type ListGroupsCB interface {
+type GroupCB interface {
 	Do(ctx context.Context, group types.Group) error
 }
 
-func ListGroups(ctx context.Context, client *iam.Client, cb ListGroupsCB) error {
+func ListGroups(ctx context.Context, client *iam.Client, cb GroupCB) error {
 	params := &iam.ListGroupsInput{
 		MaxItems: aws.Int32(100),
 	}
