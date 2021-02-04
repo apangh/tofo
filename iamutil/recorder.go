@@ -5,8 +5,22 @@ import (
 
 	"github.com/apangh/tofo/model"
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
+
+type TagsRecorder struct {
+	tags map[string]string
+}
+
+func (r *TagsRecorder) Do(ctx context.Context, t types.Tag) error {
+	if r.tags == nil {
+		r.tags = make(map[string]string)
+	}
+
+	r.tags[*t.Key] = *t.Value
+	return nil
+}
 
 type GroupRecorder struct {
 	orm *model.ORM
@@ -63,6 +77,7 @@ func (rr *RoleRecorder) ToRole(ctx context.Context, role types.Role) (
 		}
 		r.PermissionBoundary = p
 	}
+	// TODO - there is a known issue that ListRole does not return tags
 	for _, t := range role.Tags {
 		r.Tags[*t.Key] = *t.Value
 	}
@@ -78,7 +93,8 @@ func (rr *RoleRecorder) Do(ctx context.Context, role types.Role) error {
 }
 
 type UserRecorder struct {
-	orm *model.ORM
+	orm    *model.ORM
+	client *iam.Client
 }
 
 func (r *UserRecorder) toUser(ctx context.Context, user types.User) (*model.User, error) {
@@ -89,7 +105,6 @@ func (r *UserRecorder) toUser(ctx context.Context, user types.User) (*model.User
 		Arn:              aws.ToString(user.Arn),
 		CreateDate:       user.CreateDate,
 		PasswordLastUsed: user.PasswordLastUsed,
-		Tags:             make(map[string]string),
 	}
 	// TODO - there is a known issue that ListUser does not return PermissionsBoundary
 	if pb := user.PermissionsBoundary; pb != nil {
@@ -100,9 +115,14 @@ func (r *UserRecorder) toUser(ctx context.Context, user types.User) (*model.User
 		}
 		u.PermissionBoundary = p
 	}
-	for _, t := range user.Tags {
-		u.Tags[*t.Key] = *t.Value
+
+	// ListUsers does not return tags, need to retrieve that explicitly
+	var tr TagsRecorder
+	if e := ListUserTags(ctx, r.client, u.Name, &tr); e != nil {
+		return nil, e
 	}
+	u.Tags = tr.tags
+
 	return u, nil
 }
 
