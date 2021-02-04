@@ -17,26 +17,25 @@ func main() {
 	defer glog.Flush()
 
 	logToStderr := flag.Lookup("alsologtostderr")
-	if err := logToStderr.Value.Set("true"); err != nil {
-		fmt.Printf("Failed to setup glog: %v", err)
+	if e := logToStderr.Value.Set("true"); e != nil {
+		fmt.Printf("Failed to setup glog: %v\n", e)
+		return
 	}
 
 	ctx := context.Background()
-	config, err := config.LoadDefaultConfig(ctx,
+	cfg, e := config.LoadDefaultConfig(ctx,
 		config.WithSharedConfigProfile("administrator"))
-	if err != nil {
-		glog.Errorf("Failed to list dynamodb tables: %s", err)
+	if e != nil {
+		glog.Errorf("Failed to list dynamodb tables: %s", e)
 		return
 	}
-	client := sqs.NewFromConfig(config)
+	client := sqs.NewFromConfig(cfg)
 
 	var cb sqsutil.LogQueue
 
-	e := sqsutil.ListQueues(ctx, client, &cb)
-	if e != nil {
-		tofo.LogErr("ListQueues", err)
-		glog.Errorf("Failed to list queues: %s", err)
+	if e := sqsutil.ListQueues(ctx, client, &cb); e != nil {
+		tofo.LogErr("ListQueues", e)
+		glog.Errorf("Failed to list queues: %s", e)
 		return
 	}
-	return
 }

@@ -17,23 +17,22 @@ func main() {
 	defer glog.Flush()
 
 	logToStderr := flag.Lookup("alsologtostderr")
-	if err := logToStderr.Value.Set("true"); err != nil {
-		fmt.Printf("Failed to setup glog: %v", err)
+	if e := logToStderr.Value.Set("true"); e != nil {
+		fmt.Printf("Failed to setup glog: %v\n", e)
+		return
 	}
 
 	ctx := context.Background()
-	config, err := config.LoadDefaultConfig(ctx,
+	cfg, e := config.LoadDefaultConfig(ctx,
 		config.WithSharedConfigProfile("administrator"))
-	if err != nil {
-		glog.Errorf("Failed to list buckets: %s", err)
-		return
-	}
-	client := s3.NewFromConfig(config)
-
-	e := s3util.Walk(ctx, client)
 	if e != nil {
-		tofo.LogErr("s3util.Walk", err)
+		glog.Errorf("Failed to list buckets: %s", e)
 		return
 	}
-	return
+	client := s3.NewFromConfig(cfg)
+
+	if e := s3util.Walk(ctx, client, nil); e != nil {
+		tofo.LogErr("s3util.Walk", e)
+		return
+	}
 }

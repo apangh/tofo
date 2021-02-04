@@ -3,12 +3,13 @@ package s3util
 import (
 	"context"
 
+	"github.com/apangh/tofo/model"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/golang/glog"
 )
 
-func Walk(ctx context.Context, client *s3.Client) error {
+func Walk(ctx context.Context, client *s3.Client, orm *model.ORM) error {
 	params := &s3.ListBucketsInput{}
 
 	o, e := client.ListBuckets(ctx, params)
@@ -16,8 +17,8 @@ func Walk(ctx context.Context, client *s3.Client) error {
 		return e
 	}
 	glog.Infof("Owner: %s %s", aws.ToString(o.Owner.DisplayName), aws.ToString(o.Owner.ID))
-	glog.Infof("Metadata: %v", o.ResultMetadata)
 	for i, bucket := range o.Buckets {
+
 		bucketName := aws.ToString(bucket.Name)
 		glog.Infof("Bucket[%d] %s %v", i, bucketName, bucket.CreationDate)
 

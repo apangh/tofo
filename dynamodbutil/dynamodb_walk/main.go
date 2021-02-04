@@ -17,25 +17,23 @@ func main() {
 	defer glog.Flush()
 
 	logToStderr := flag.Lookup("alsologtostderr")
-	if err := logToStderr.Value.Set("true"); err != nil {
-		fmt.Printf("Failed to setup glog: %v", err)
+	if e := logToStderr.Value.Set("true"); e != nil {
+		fmt.Printf("Failed to setup glog: %v\n", e)
+		return
 	}
 
 	ctx := context.Background()
-	config, err := config.LoadDefaultConfig(ctx,
+	cfg, e := config.LoadDefaultConfig(ctx,
 		config.WithSharedConfigProfile("administrator"))
-	if err != nil {
-		glog.Errorf("Failed to list dynamodb tables: %s", err)
-		return
-	}
-	client := dynamodb.NewFromConfig(config)
-
-	e := dynamodbutil.Walk(ctx, client)
 	if e != nil {
-		tofo.LogErr("ListTables", err)
-		glog.Errorf("Failed to walk tables: %s", err)
+		glog.Errorf("Failed to list dynamodb tables: %s", e)
 		return
 	}
+	client := dynamodb.NewFromConfig(cfg)
 
-	return
+	if e := dynamodbutil.Walk(ctx, client, nil); e != nil {
+		tofo.LogErr("ListTables", e)
+		glog.Errorf("Failed to walk tables: %s", e)
+		return
+	}
 }

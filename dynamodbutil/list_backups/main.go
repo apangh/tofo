@@ -17,27 +17,26 @@ func main() {
 	defer glog.Flush()
 
 	logToStderr := flag.Lookup("alsologtostderr")
-	if err := logToStderr.Value.Set("true"); err != nil {
-		fmt.Printf("Failed to setup glog: %v", err)
+	if e := logToStderr.Value.Set("true"); e != nil {
+		fmt.Printf("Failed to setup glog: %v\n", e)
+		return
 	}
 
 	ctx := context.Background()
-	config, err := config.LoadDefaultConfig(ctx,
+	cfg, e := config.LoadDefaultConfig(ctx,
 		config.WithSharedConfigProfile("administrator"))
-	if err != nil {
-		glog.Errorf("Failed to list dynamodb tables: %s\n", err)
+	if e != nil {
+		glog.Errorf("Failed to list dynamodb tables: %s\n", e)
 		return
 	}
-	client := dynamodb.NewFromConfig(config)
+	client := dynamodb.NewFromConfig(cfg)
 	tableName := "Hello"
 
 	var cb dynamodbutil.LogBackupSummary
 
-	e := dynamodbutil.ListBackup(ctx, client, tableName, &cb)
-	if e != nil {
-		tofo.LogErr("ListBackups", err)
-		glog.Errorf("Failed to list backups: %s", err)
+	if e := dynamodbutil.ListBackup(ctx, client, tableName, &cb); e != nil {
+		tofo.LogErr("ListBackups", e)
+		glog.Errorf("Failed to list backups: %s", e)
 		return
 	}
-	return
 }

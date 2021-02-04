@@ -18,21 +18,22 @@ func main() {
 	defer glog.Flush()
 
 	logToStderr := flag.Lookup("alsologtostderr")
-	if err := logToStderr.Value.Set("true"); err != nil {
-		fmt.Printf("Failed to setup glog: %v", err)
+	if e := logToStderr.Value.Set("true"); e != nil {
+		fmt.Printf("Failed to setup glog: %v\n", e)
+		return
 	}
 
 	bucketName := "test-bucket-46709394-abcd-xyz"
 
 	ctx := context.Background()
-	config, err := config.LoadDefaultConfig(ctx,
+	cfg, e := config.LoadDefaultConfig(ctx,
 		config.WithSharedConfigProfile("administrator"),
 		config.WithRegion("us-west-2"))
-	if err != nil {
-		glog.Errorf("Failed to create bucket %s: %s\n", bucketName, err)
+	if e != nil {
+		glog.Errorf("Failed to create bucket %s: %s", bucketName, e)
 		return
 	}
-	client := s3.NewFromConfig(config, func(o *s3.Options) {
+	client := s3.NewFromConfig(cfg, func(o *s3.Options) {
 		o.UsePathStyle = true
 	})
 
@@ -43,13 +44,11 @@ func main() {
 		},
 	}
 
-	o, err := client.CreateBucket(ctx, params)
-	if err != nil {
-		tofo.LogErr("ListBuckets", err)
-		glog.Errorf("Failed to create bucket: %s: %s\n", bucketName, err)
+	o, e := client.CreateBucket(ctx, params)
+	if e != nil {
+		tofo.LogErr("ListBuckets", e)
+		glog.Errorf("Failed to create bucket: %s: %s", bucketName, e)
 		return
 	}
-	glog.Infof("Created bucket %s: %v\n", bucketName, o)
-
-	return
+	glog.Infof("Created bucket %s: %v", bucketName, o)
 }

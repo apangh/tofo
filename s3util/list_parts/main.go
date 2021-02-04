@@ -17,25 +17,25 @@ func main() {
 	defer glog.Flush()
 
 	logToStderr := flag.Lookup("alsologtostderr")
-	if err := logToStderr.Value.Set("true"); err != nil {
-		fmt.Printf("Failed to setup glog: %v", err)
+	if e := logToStderr.Value.Set("true"); e != nil {
+		fmt.Printf("Failed to setup glog: %v\n", e)
+		return
 	}
 
 	ctx := context.Background()
-	config, err := config.LoadDefaultConfig(ctx,
+	cfg, e := config.LoadDefaultConfig(ctx,
 		config.WithSharedConfigProfile("administrator"))
-	if err != nil {
-		glog.Errorf("Failed to list multi-part uploads: %s\n", err)
+	if e != nil {
+		glog.Errorf("Failed to list multi-part uploads: %s", e)
 		return
 	}
-	client := s3.NewFromConfig(config)
+	client := s3.NewFromConfig(cfg)
 
 	bucketName := "test-bucket-46709394-abcd-1112233"
 	key := "list_buckets"
 	uploadId := "id"
 
-	e := s3util.ListParts(ctx, client, bucketName, key, uploadId, &s3util.LogPart{})
-	if e != nil {
+	if e := s3util.ListParts(ctx, client, bucketName, key, uploadId, &s3util.LogPart{}); e != nil {
 		tofo.LogErr("ListParts", e)
 		glog.Errorf("Failed to list parts in %s %s %s: %v",
 			bucketName, key, uploadId, e)
