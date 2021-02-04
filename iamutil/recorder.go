@@ -47,7 +47,8 @@ func (r *GroupRecorder) Do(ctx context.Context, group types.Group) error {
 }
 
 type RoleRecorder struct {
-	orm *model.ORM
+	orm    *model.ORM
+	client *iam.Client
 }
 
 func (rr *RoleRecorder) ToRole(ctx context.Context, role types.Role) (
@@ -77,10 +78,14 @@ func (rr *RoleRecorder) ToRole(ctx context.Context, role types.Role) (
 		}
 		r.PermissionBoundary = p
 	}
-	// TODO - there is a known issue that ListRole does not return tags
-	for _, t := range role.Tags {
-		r.Tags[*t.Key] = *t.Value
+
+	// ListRoles does not return tags, ned to retreive separately
+	var tr TagsRecorder
+	if e := ListRoleTags(ctx, rr.client, r.Name, &tr); e != nil {
+		return nil, e
 	}
+	r.Tags = tr.tags
+
 	return r, nil
 }
 
@@ -116,7 +121,7 @@ func (r *UserRecorder) toUser(ctx context.Context, user types.User) (*model.User
 		u.PermissionBoundary = p
 	}
 
-	// ListUsers does not return tags, need to retrieve that explicitly
+	// ListUsers does not return tags, need to retrieve that separately
 	var tr TagsRecorder
 	if e := ListUserTags(ctx, r.client, u.Name, &tr); e != nil {
 		return nil, e
