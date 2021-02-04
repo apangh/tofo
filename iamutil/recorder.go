@@ -8,11 +8,36 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
 
+type GroupRecorder struct {
+	orm *model.ORM
+}
+
+func (r *GroupRecorder) ToGroup(ctx context.Context, group types.Group) (
+	*model.Group, error) {
+	g := &model.Group{
+		Id:         aws.ToString(group.GroupId),
+		Name:       aws.ToString(group.GroupName),
+		Path:       aws.ToString(group.Path),
+		Arn:        aws.ToString(group.Arn),
+		CreateDate: aws.ToTime(group.CreateDate),
+	}
+	return g, nil
+}
+
+func (r *GroupRecorder) Do(ctx context.Context, group types.Group) error {
+	g, e := r.ToGroup(ctx, group)
+	if e != nil {
+		return e
+	}
+	return r.orm.GroupModel.Insert(ctx, g)
+}
+
 type RoleRecorder struct {
 	orm *model.ORM
 }
 
-func (rr *RoleRecorder) ToRole(ctx context.Context, role types.Role) (*model.Role, error) {
+func (rr *RoleRecorder) ToRole(ctx context.Context, role types.Role) (
+	*model.Role, error) {
 	r := &model.Role{
 		Id:                       aws.ToString(role.RoleId),
 		Name:                     aws.ToString(role.RoleName),

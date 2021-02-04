@@ -4,6 +4,7 @@ import "context"
 
 type ORM struct {
 	PolicyModel  PolicyModel
+	GroupModel   GroupModel
 	UserModel    UserModel
 	RoleModel    RoleModel
 	AccountModel AccountModel
@@ -12,6 +13,7 @@ type ORM struct {
 
 func (o *ORM) Dump(ctx context.Context) {
 	o.PolicyModel.Dump(ctx)
+	o.GroupModel.Dump(ctx)
 	o.UserModel.Dump(ctx)
 	o.RoleModel.Dump(ctx)
 	o.AccountModel.Dump(ctx)
