@@ -17,25 +17,26 @@ func main() {
 	defer glog.Flush()
 
 	logToStderr := flag.Lookup("alsologtostderr")
-	if err := logToStderr.Value.Set("true"); err != nil {
-		fmt.Printf("Failed to setup glog: %v", err)
+	if e := logToStderr.Value.Set("true"); e != nil {
+		fmt.Printf("Failed to setup glog: %v\n", e)
+		return
 	}
 
 	ctx := context.Background()
-	config, err := config.LoadDefaultConfig(ctx,
+	cfg, e := config.LoadDefaultConfig(ctx,
 		config.WithSharedConfigProfile("administrator"))
-	if err != nil {
-		glog.Errorf("Failed to list buckets: %s\n", err)
+	if e != nil {
+		glog.Errorf("Failed to list buckets: %s", e)
 		return
 	}
-	client := s3.NewFromConfig(config)
+	client := s3.NewFromConfig(cfg)
 
 	params := &s3.ListBucketsInput{}
 
-	o, err := client.ListBuckets(ctx, params)
-	if err != nil {
-		tofo.LogErr("ListBuckets", err)
-		glog.Errorf("Failed to list buckets: %s\n", err)
+	o, e := client.ListBuckets(ctx, params)
+	if e != nil {
+		tofo.LogErr("ListBuckets", e)
+		glog.Errorf("Failed to list buckets: %s", e)
 		return
 	}
 	for i, bucket := range o.Buckets {
@@ -45,6 +46,4 @@ func main() {
 	glog.Infof("Owner: %s %s", aws.ToString(o.Owner.DisplayName),
 		aws.ToString(o.Owner.ID))
 	glog.Infof("Metadata: %v", o.ResultMetadata)
-
-	return
 }

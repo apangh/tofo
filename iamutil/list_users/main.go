@@ -17,23 +17,23 @@ func main() {
 	defer glog.Flush()
 
 	logToStderr := flag.Lookup("alsologtostderr")
-	if err := logToStderr.Value.Set("true"); err != nil {
-		fmt.Printf("Failed to setup glog: %v", err)
+	if e := logToStderr.Value.Set("true"); e != nil {
+		fmt.Printf("Failed to setup glog: %v\n", e)
+		return
 	}
 
 	ctx := context.Background()
-	config, err := config.LoadDefaultConfig(ctx,
+	cfg, e := config.LoadDefaultConfig(ctx,
 		config.WithSharedConfigProfile("administrator"))
-	if err != nil {
-		glog.Errorf("Failed to list users: %s", err)
+	if e != nil {
+		glog.Errorf("Failed to list users: %s", e)
 		return
 	}
-	client := iam.NewFromConfig(config)
+	client := iam.NewFromConfig(cfg)
 
 	l := &iamutil.LogUser{}
 
-	e := iamutil.ListUsers(ctx, client, l)
-	if e != nil {
+	if e := iamutil.ListUsers(ctx, client, l); e != nil {
 		tofo.LogErr("ListUsers", e)
 		glog.Errorf("Failed to list users: %v", e)
 		return

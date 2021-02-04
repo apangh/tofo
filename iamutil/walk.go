@@ -3,10 +3,11 @@ package iamutil
 import (
 	"context"
 
+	"github.com/apangh/tofo/model"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 )
 
-func Walk(ctx context.Context, client *iam.Client) error {
+func Walk(ctx context.Context, client *iam.Client, orm *model.ORM) error {
 	if e := ListUsers(ctx, client, &LogUser{}); e != nil {
 		return e
 	}

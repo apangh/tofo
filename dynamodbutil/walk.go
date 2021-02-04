@@ -3,6 +3,7 @@ package dynamodbutil
 import (
 	"context"
 
+	"github.com/apangh/tofo/model"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/golang/glog"
 )
@@ -20,7 +21,7 @@ func (w *WalkTableNameCB) Do(ctx context.Context, tableName string) error {
 	return e
 }
 
-func Walk(ctx context.Context, client *dynamodb.Client) error {
+func Walk(ctx context.Context, client *dynamodb.Client, orm *model.ORM) error {
 	cb := WalkTableNameCB{
 		client: client,
 	}
