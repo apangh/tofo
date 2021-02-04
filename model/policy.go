@@ -7,16 +7,17 @@ import (
 )
 
 type Policy struct {
-	Id                            string
-	Name                          string
-	Path                          string
-	Arn                           string
+	Id         string
+	Name       string
+	Path       string
+	Arn        string
+	CreateDate time.Time
+
 	AttachmentCount               int32
 	PermissionsBoundaryUsageCount int32
 	DefaultVersionId              string
 	Description                   string
 	IsAttachable                  bool
-	CreateDate                    time.Time
 	UpdateDate                    time.Time
 }
 

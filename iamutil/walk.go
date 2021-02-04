@@ -17,7 +17,7 @@ func Walk(ctx context.Context, client *iam.Client, orm *model.ORM) error {
 	if e := ListRoles(ctx, client, &RoleRecorder{orm: orm}); e != nil {
 		return e
 	}
-	if e := ListGroups(ctx, client, &LogGroup{}); e != nil {
+	if e := ListGroups(ctx, client, &GroupRecorder{orm: orm}); e != nil {
 		return e
 	}
 	return nil
