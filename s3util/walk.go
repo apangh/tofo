@@ -28,14 +28,14 @@ func Walk(ctx context.Context, client *s3.Client, orm *model.ORM) error {
 	}
 
 	for _, bucket := range o.Buckets {
-		b, e := bucketRecorder.Do(ctx, bucket)
+		_, e := bucketRecorder.Do(ctx, bucket)
 		if e != nil {
 			return e
 		}
 
 		bucketName := aws.ToString(bucket.Name)
 
-		e := ListBucketInventoryConfigurations(ctx, client, bucketName,
+		e = ListBucketInventoryConfigurations(ctx, client, bucketName,
 			&LogInventoryConfiguration{})
 		if e != nil {
 			return e

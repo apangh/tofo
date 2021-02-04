@@ -8,10 +8,13 @@ import (
 )
 
 func Walk(ctx context.Context, client *iam.Client, orm *model.ORM) error {
+	if e := ListPolicies(ctx, client, &PolicyRecorder{orm: orm}); e != nil {
+		return e
+	}
 	if e := ListUsers(ctx, client, &UserRecorder{orm: orm}); e != nil {
 		return e
 	}
-	if e := ListRoles(ctx, client, &LogRole{}); e != nil {
+	if e := ListRoles(ctx, client, &RoleRecorder{orm: orm}); e != nil {
 		return e
 	}
 	if e := ListGroups(ctx, client, &LogGroup{}); e != nil {
