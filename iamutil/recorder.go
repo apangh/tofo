@@ -51,6 +51,16 @@ type RoleRecorder struct {
 	client *iam.Client
 }
 
+func ToTags(ctx context.Context, tags []types.Tag) (map[string]string, error) {
+	var tr TagsRecorder
+	for _, t := range tags {
+		if e := tr.Do(ctx, t); e != nil {
+			return nil, e
+		}
+	}
+	return tr.tags, nil
+}
+
 func (rr *RoleRecorder) ToRole(ctx context.Context, role types.Role) (
 	*model.Role, error) {
 	r := &model.Role{
@@ -69,7 +79,7 @@ func (rr *RoleRecorder) ToRole(ctx context.Context, role types.Role) (
 			Region: aws.ToString(l.Region),
 		}
 	}
-	// TODO - there is a known issue that ListRole does not return PermissionsBoundary
+
 	if pb := role.PermissionsBoundary; pb != nil {
 		p, e := rr.orm.PolicyModel.LookupByArn(ctx,
 			aws.ToString(pb.PermissionsBoundaryArn))
@@ -79,12 +89,11 @@ func (rr *RoleRecorder) ToRole(ctx context.Context, role types.Role) (
 		r.PermissionBoundary = p
 	}
 
-	// ListRoles does not return tags, ned to retreive separately
-	var tr TagsRecorder
-	if e := ListRoleTags(ctx, rr.client, r.Name, &tr); e != nil {
+	tags, e := ToTags(ctx, role.Tags)
+	if e != nil {
 		return nil, e
 	}
-	r.Tags = tr.tags
+	r.Tags = tags
 
 	return r, nil
 }
@@ -95,6 +104,25 @@ func (rr *RoleRecorder) Do(ctx context.Context, role types.Role) error {
 		return e
 	}
 	return rr.orm.RoleModel.Insert(ctx, r)
+}
+
+type RoleRecorderForListRoles struct {
+	RoleRecorder
+}
+
+func (r *RoleRecorderForListRoles) Do(ctx context.Context, role types.Role) error {
+	// There is a known issue that the ListRoles does not return tags and
+	// permissions boundary, need to invoke GetRole again to obtain such
+	// information.
+	params := iam.GetRoleInput{
+		RoleName: role.RoleName,
+	}
+	o, e := r.client.GetRole(ctx, &params)
+	if e != nil {
+		return e
+	}
+
+	return r.RoleRecorder.Do(ctx, *o.Role)
 }
 
 type UserRecorder struct {
@@ -111,7 +139,7 @@ func (r *UserRecorder) toUser(ctx context.Context, user types.User) (*model.User
 		CreateDate:       user.CreateDate,
 		PasswordLastUsed: user.PasswordLastUsed,
 	}
-	// TODO - there is a known issue that ListUser does not return PermissionsBoundary
+
 	if pb := user.PermissionsBoundary; pb != nil {
 		p, e := r.orm.PolicyModel.LookupByArn(ctx,
 			aws.ToString(pb.PermissionsBoundaryArn))
@@ -121,12 +149,11 @@ func (r *UserRecorder) toUser(ctx context.Context, user types.User) (*model.User
 		u.PermissionBoundary = p
 	}
 
-	// ListUsers does not return tags, need to retrieve that separately
-	var tr TagsRecorder
-	if e := ListUserTags(ctx, r.client, u.Name, &tr); e != nil {
+	tags, e := ToTags(ctx, user.Tags)
+	if e != nil {
 		return nil, e
 	}
-	u.Tags = tr.tags
+	u.Tags = tags
 
 	return u, nil
 }
@@ -137,6 +164,25 @@ func (r *UserRecorder) Do(ctx context.Context, user types.User) error {
 		return e
 	}
 	return r.orm.UserModel.Insert(ctx, u)
+}
+
+type UserRecorderForListUsers struct {
+	UserRecorder
+}
+
+func (r *UserRecorderForListUsers) Do(ctx context.Context, user types.User) error {
+	// There is a known issue that the ListUsers does not return tags and
+	// permissions boundary, need to invoke GetUser again to obtain such
+	// information.
+	params := iam.GetUserInput{
+		UserName: user.UserName,
+	}
+	o, e := r.client.GetUser(ctx, &params)
+	if e != nil {
+		return e
+	}
+
+	return r.UserRecorder.Do(ctx, *o.User)
 }
 
 type PolicyRecorder struct {
