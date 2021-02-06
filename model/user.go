@@ -7,13 +7,13 @@ import (
 )
 
 type User struct {
-	Id                 string
-	Name               string
-	Path               string
-	Arn                string
-	CreateDate         *time.Time
-	Tags               map[string]string
-	PermissionBoundary *Policy
+	Id                  string
+	Name                string
+	Path                string
+	Arn                 string
+	CreateDate          time.Time
+	Tags                map[string]string
+	PermissionsBoundary *AttachedPermissionsBoundary
 
 	PasswordLastUsed *time.Time
 }
