@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type Policy struct {
+type ManagedPolicy struct {
 	Id         string
 	Name       string
 	Path       string
@@ -22,13 +22,13 @@ type Policy struct {
 }
 
 var (
-	PolicyAlreadyExists = errors.New("PolicyAlreadyExists")
-	PolicyNotFound      = errors.New("PolicyNotFound")
+	ManagedPolicyAlreadyExists = errors.New("ManagedPolicyAlreadyExists")
+	ManagedPolicyNotFound      = errors.New("ManagedPolicyNotFound")
 )
 
-type PolicyModel interface {
-	Insert(ctx context.Context, p *Policy) error
-	Lookup(ctx context.Context, id string) (*Policy, error)
-	LookupByArn(ctx context.Context, arn string) (*Policy, error)
+type ManagedPolicyModel interface {
+	Insert(ctx context.Context, p *ManagedPolicy) error
+	Lookup(ctx context.Context, id string) (*ManagedPolicy, error)
+	LookupByArn(ctx context.Context, arn string) (*ManagedPolicy, error)
 	Dump(ctx context.Context)
 }

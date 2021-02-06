@@ -6,24 +6,24 @@ import (
 	"time"
 )
 
-type LastUsed struct {
-	Date   *time.Time
+type RoleLastUsed struct {
+	Date   time.Time
 	Region string
 }
 
 type Role struct {
-	Id                 string
-	Name               string
-	Path               string
-	Arn                string
-	CreateDate         *time.Time
-	Tags               map[string]string
-	PermissionBoundary *Policy
+	Id                  string
+	Name                string
+	Path                string
+	Arn                 string
+	CreateDate          time.Time
+	Tags                map[string]string
+	PermissionsBoundary *AttachedPermissionsBoundary
 
 	AssumeRolePolicyDocument string
 	Description              string
 	MaxSessionDuration       *int32
-	LastUsed                 *LastUsed
+	LastUsed                 *RoleLastUsed
 }
 
 var (

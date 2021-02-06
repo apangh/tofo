@@ -18,9 +18,9 @@ func ListGroups(ctx context.Context, client *iam.Client, cb GroupCB) error {
 	}
 	p := iam.NewListGroupsPaginator(client, params)
 	for p.HasMorePages() {
-		o, err := p.NextPage(ctx)
-		if err != nil {
-			return err
+		o, e := p.NextPage(ctx)
+		if e != nil {
+			return e
 		}
 		for _, group := range o.Groups {
 			if e := cb.Do(ctx, group); e != nil {
