@@ -4,8 +4,11 @@ import "github.com/apangh/tofo/model"
 
 func NewORM() (*model.ORM, error) {
 	return &model.ORM{
-		ManagedPolicyModel:       NewManagedPolicyModel(),
 		ManagedPolicyDetailModel: NewManagedPolicyDetailModel(),
+		GroupDetailModel:         NewGroupDetailModel(),
+		UserDetailModel:          NewUserDetailModel(),
+		RoleDetailModel:          NewRoleDetailModel(),
+		ManagedPolicyModel:       NewManagedPolicyModel(),
 		RoleModel:                NewRoleModel(),
 		GroupModel:               NewGroupModel(),
 		UserModel:                NewUserModel(),

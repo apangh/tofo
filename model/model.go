@@ -3,8 +3,11 @@ package model
 import "context"
 
 type ORM struct {
-	ManagedPolicyModel       ManagedPolicyModel
 	ManagedPolicyDetailModel ManagedPolicyDetailModel
+	GroupDetailModel         GroupDetailModel
+	UserDetailModel          UserDetailModel
+	RoleDetailModel          RoleDetailModel
+	ManagedPolicyModel       ManagedPolicyModel
 	GroupModel               GroupModel
 	UserModel                UserModel
 	RoleModel                RoleModel
@@ -13,8 +16,11 @@ type ORM struct {
 }
 
 func (o *ORM) Dump(ctx context.Context) {
-	o.ManagedPolicyModel.Dump(ctx)
 	o.ManagedPolicyDetailModel.Dump(ctx)
+	o.GroupDetailModel.Dump(ctx)
+	o.RoleDetailModel.Dump(ctx)
+	o.UserDetailModel.Dump(ctx)
+	o.ManagedPolicyModel.Dump(ctx)
 	o.GroupModel.Dump(ctx)
 	o.UserModel.Dump(ctx)
 	o.RoleModel.Dump(ctx)

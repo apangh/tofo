@@ -5,71 +5,61 @@ import (
 
 	"github.com/apangh/tofo/iamutil/recorder"
 	"github.com/apangh/tofo/model"
-	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
+
+type GroupDetailRecorder struct {
+	orm *model.ORM
+}
+
+func (r *GroupDetailRecorder) Do(ctx context.Context, g types.GroupDetail) error {
+	return r.orm.GroupDetailModel.Insert(ctx, recorder.ToGroupDetail(g))
+}
+
+type RoleDetailRecorder struct {
+	orm *model.ORM
+}
+
+func (r *RoleDetailRecorder) Do(ctx context.Context, rd types.RoleDetail) error {
+	return r.orm.RoleDetailModel.Insert(ctx, recorder.ToRoleDetail(rd))
+}
+
+type ManagedPolicyDetailRecorder struct {
+	orm *model.ORM
+}
+
+func (r *ManagedPolicyDetailRecorder) Do(ctx context.Context, p types.ManagedPolicyDetail) error {
+	return r.orm.ManagedPolicyDetailModel.Insert(ctx, recorder.ToManagedPolicyDetail(p))
+}
+
+type UserDetailRecorder struct {
+	orm *model.ORM
+}
+
+func (r *UserDetailRecorder) Do(ctx context.Context, u types.UserDetail) error {
+	return r.orm.UserDetailModel.Insert(ctx, recorder.ToUserDetail(u))
+}
 
 type GroupRecorder struct {
 	orm *model.ORM
 }
 
 func (r *GroupRecorder) Do(ctx context.Context, group types.Group) error {
-	g := recorder.ToGroup(group)
-	return r.orm.GroupModel.Insert(ctx, g)
+	return r.orm.GroupModel.Insert(ctx, recorder.ToGroup(group))
 }
 
 type RoleRecorder struct {
-	orm    *model.ORM
-	client *iam.Client
+	orm *model.ORM
 }
 
 func (rr *RoleRecorder) Do(ctx context.Context, role types.Role) error {
 	return rr.orm.RoleModel.Insert(ctx, recorder.ToRole(role))
 }
 
-type RoleRecorderForListRoles struct {
-	RoleRecorder
-}
-
-func (r *RoleRecorderForListRoles) Do(ctx context.Context, role types.Role) error {
-	// There is a known issue that the ListRoles does not return tags and
-	// permissions boundary, need to invoke GetRole again to obtain such
-	// information.
-	params := iam.GetRoleInput{
-		RoleName: role.RoleName,
-	}
-	o, e := r.client.GetRole(ctx, &params)
-	if e != nil {
-		return e
-	}
-
-	return r.RoleRecorder.Do(ctx, *o.Role)
-}
-
 type UserRecorder struct {
-	orm    *model.ORM
-	client *iam.Client
+	orm *model.ORM
 }
 
 func (r *UserRecorder) Do(ctx context.Context, user types.User) error {
 	return r.orm.UserModel.Insert(ctx, recorder.ToUser(user))
-}
-
-type UserRecorderForListUsers struct {
-	UserRecorder
-}
-
-func (r *UserRecorderForListUsers) Do(ctx context.Context, user types.User) error {
-	// There is a known issue that the ListUsers does not return tags and
-	// permissions boundary, need to invoke GetUser again to obtain such
-	// information.
-	params := iam.GetUserInput{
-		UserName: user.UserName,
-	}
-	o, e := r.client.GetUser(ctx, &params)
-	if e != nil {
-		return e
-	}
-
-	return r.UserRecorder.Do(ctx, *o.User)
 }
