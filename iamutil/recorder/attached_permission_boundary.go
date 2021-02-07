@@ -5,11 +5,16 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
 
-func ToAttachedPermissionsBoundary(b *types.AttachedPermissionsBoundary) *model.AttachedPermissionsBoundary {
+func ToAttachedPermissionsBoundary(b *types.AttachedPermissionsBoundary) (
+	*model.AttachedPermissionsBoundary, error) {
 	if b == nil {
-		return nil
+		return nil, nil
+	}
+	arn, e := ToArn(b.PermissionsBoundaryArn)
+	if e != nil {
+		return nil, e
 	}
 	return &model.AttachedPermissionsBoundary{
-		Arn: b.PermissionsBoundaryArn,
-	}
+		Arn: arn,
+	}, nil
 }

@@ -7,7 +7,7 @@ import (
 )
 
 type InstanceProfile struct {
-	Arn        string
+	Arn        *ARN
 	CreateDate time.Time
 	Id         string
 	Name       string

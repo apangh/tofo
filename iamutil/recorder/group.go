@@ -6,12 +6,16 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
 
-func ToGroup(group types.Group) *model.Group {
+func ToGroup(group types.Group) (*model.Group, error) {
+	arn, e := ToArn(group.Arn)
+	if e != nil {
+		return nil, e
+	}
 	return &model.Group{
 		Id:         aws.ToString(group.GroupId),
 		Name:       aws.ToString(group.GroupName),
 		Path:       aws.ToString(group.Path),
-		Arn:        aws.ToString(group.Arn),
+		Arn:        arn,
 		CreateDate: aws.ToTime(group.CreateDate),
-	}
+	}, nil
 }

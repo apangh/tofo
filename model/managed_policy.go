@@ -10,7 +10,7 @@ type ManagedPolicy struct {
 	Id         string
 	Name       string
 	Path       string
-	Arn        string
+	Arn        *ARN
 	CreateDate time.Time
 
 	AttachmentCount               int32

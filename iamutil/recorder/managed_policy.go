@@ -12,12 +12,16 @@ type ManagedPolicyRecorder struct {
 	Orm *model.ORM
 }
 
-func toManagedPolicy(p types.Policy) *model.ManagedPolicy {
+func toManagedPolicy(p types.Policy) (*model.ManagedPolicy, error) {
+	arn, e := ToArn(p.Arn)
+	if e != nil {
+		return nil, e
+	}
 	return &model.ManagedPolicy{
 		Id:                            aws.ToString(p.PolicyId),
 		Name:                          aws.ToString(p.PolicyName),
 		Path:                          aws.ToString(p.Path),
-		Arn:                           aws.ToString(p.Arn),
+		Arn:                           arn,
 		AttachmentCount:               aws.ToInt32(p.AttachmentCount),
 		PermissionsBoundaryUsageCount: aws.ToInt32(p.PermissionsBoundaryUsageCount),
 		DefaultVersionId:              aws.ToString(p.DefaultVersionId),
@@ -25,10 +29,13 @@ func toManagedPolicy(p types.Policy) *model.ManagedPolicy {
 		IsAttachable:                  p.IsAttachable,
 		CreateDate:                    aws.ToTime(p.CreateDate),
 		UpdateDate:                    aws.ToTime(p.UpdateDate),
-	}
+	}, nil
 }
 
 func (r *ManagedPolicyRecorder) Do(ctx context.Context, policy types.Policy) error {
-	p := toManagedPolicy(policy)
+	p, e := toManagedPolicy(policy)
+	if e != nil {
+		return e
+	}
 	return r.Orm.ManagedPolicyModel.Insert(ctx, p)
 }

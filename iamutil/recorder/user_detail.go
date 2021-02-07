@@ -11,17 +11,28 @@ func ToUserDetail(user types.UserDetail) (*model.UserDetail, error) {
 	if e != nil {
 		return nil, e
 	}
+	arn, e := ToArn(user.Arn)
+	if e != nil {
+		return nil, e
+	}
+	pb, e := ToAttachedPermissionsBoundary(user.PermissionsBoundary)
+	if e != nil {
+		return nil, e
+	}
+	ap, e := ToAttachedPolicies(user.AttachedManagedPolicies)
+	if e != nil {
+		return nil, e
+	}
 	return &model.UserDetail{
-		Id:         aws.ToString(user.UserId),
-		Name:       aws.ToString(user.UserName),
-		Path:       aws.ToString(user.Path),
-		Arn:        aws.ToString(user.Arn),
-		CreateDate: aws.ToTime(user.CreateDate),
-		Tags:       ToTags(user.Tags),
-		PermissionsBoundary: ToAttachedPermissionsBoundary(
-			user.PermissionsBoundary),
-		ManagedPolicies: ToAttachedPolicies(user.AttachedManagedPolicies),
-		Policies:        policies,
-		Groups:          ToAttachedGroups(user.GroupList),
+		Id:                  aws.ToString(user.UserId),
+		Name:                aws.ToString(user.UserName),
+		Path:                aws.ToString(user.Path),
+		Arn:                 arn,
+		CreateDate:          aws.ToTime(user.CreateDate),
+		Tags:                ToTags(user.Tags),
+		PermissionsBoundary: pb,
+		ManagedPolicies:     ap,
+		Policies:            policies,
+		Groups:              ToAttachedGroups(user.GroupList),
 	}, nil
 }

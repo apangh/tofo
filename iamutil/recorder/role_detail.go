@@ -15,20 +15,35 @@ func ToRoleDetail(role types.RoleDetail) (*model.RoleDetail, error) {
 	if e != nil {
 		return nil, e
 	}
+	ip, e := ToInstanceProfiles(role.InstanceProfileList)
+	if e != nil {
+		return nil, e
+	}
+	arn, e := ToArn(role.Arn)
+	if e != nil {
+		return nil, e
+	}
+	pb, e := ToAttachedPermissionsBoundary(role.PermissionsBoundary)
+	if e != nil {
+		return nil, e
+	}
+	mp, e := ToAttachedPolicies(role.AttachedManagedPolicies)
+	if e != nil {
+		return nil, e
+	}
 
 	return &model.RoleDetail{
 		Id:                       aws.ToString(role.RoleId),
 		Name:                     aws.ToString(role.RoleName),
 		Path:                     aws.ToString(role.Path),
-		Arn:                      aws.ToString(role.Arn),
+		Arn:                      arn,
 		CreateDate:               aws.ToTime(role.CreateDate),
 		AssumeRolePolicyDocument: s,
 		Tags:                     ToTags(role.Tags),
-		PermissionsBoundary: ToAttachedPermissionsBoundary(
-			role.PermissionsBoundary),
-		LastUsed:         ToRoleLastUsed(role.RoleLastUsed),
-		ManagedPolicies:  ToAttachedPolicies(role.AttachedManagedPolicies),
-		Policies:         policies,
-		InstanceProfiles: ToInstanceProfiles(role.InstanceProfileList),
+		PermissionsBoundary:      pb,
+		LastUsed:                 ToRoleLastUsed(role.RoleLastUsed),
+		ManagedPolicies:          mp,
+		Policies:                 policies,
+		InstanceProfiles:         ip,
 	}, nil
 }

@@ -11,14 +11,22 @@ func ToGroupDetail(g types.GroupDetail) (*model.GroupDetail, error) {
 	if e != nil {
 		return nil, e
 	}
+	arn, e := ToArn(g.Arn)
+	if e != nil {
+		return nil, e
+	}
+	managedPolicies, e := ToAttachedPolicies(g.AttachedManagedPolicies)
+	if e != nil {
+		return nil, e
+	}
 
 	return &model.GroupDetail{
 		Id:              aws.ToString(g.GroupId),
 		Name:            aws.ToString(g.GroupName),
 		Path:            aws.ToString(g.Path),
-		Arn:             aws.ToString(g.Arn),
+		Arn:             arn,
 		CreateDate:      aws.ToTime(g.CreateDate),
-		ManagedPolicies: ToAttachedPolicies(g.AttachedManagedPolicies),
+		ManagedPolicies: managedPolicies,
 		Policies:        policies,
 	}, nil
 }

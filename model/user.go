@@ -10,7 +10,7 @@ type User struct {
 	Id                  string
 	Name                string
 	Path                string
-	Arn                 string
+	Arn                 *ARN
 	CreateDate          time.Time
 	Tags                map[string]string
 	PermissionsBoundary *AttachedPermissionsBoundary
