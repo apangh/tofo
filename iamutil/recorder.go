@@ -61,7 +61,11 @@ type GroupRecorder struct {
 }
 
 func (r *GroupRecorder) Do(ctx context.Context, group types.Group) error {
-	return r.orm.GroupModel.Insert(ctx, recorder.ToGroup(group))
+	g, e := recorder.ToGroup(group)
+	if e != nil {
+		return e
+	}
+	return r.orm.GroupModel.Insert(ctx, g)
 }
 
 type RoleRecorder struct {
@@ -69,7 +73,11 @@ type RoleRecorder struct {
 }
 
 func (rr *RoleRecorder) Do(ctx context.Context, role types.Role) error {
-	return rr.orm.RoleModel.Insert(ctx, recorder.ToRole(role))
+	r, e := recorder.ToRole(role)
+	if e != nil {
+		return e
+	}
+	return rr.orm.RoleModel.Insert(ctx, r)
 }
 
 type UserRecorder struct {
@@ -77,5 +85,9 @@ type UserRecorder struct {
 }
 
 func (r *UserRecorder) Do(ctx context.Context, user types.User) error {
-	return r.orm.UserModel.Insert(ctx, recorder.ToUser(user))
+	u, e := recorder.ToUser(user)
+	if e != nil {
+		return e
+	}
+	return r.orm.UserModel.Insert(ctx, u)
 }

@@ -18,11 +18,15 @@ func ToManagedPolicyDetail(p types.ManagedPolicyDetail) (
 	if e != nil {
 		return nil, e
 	}
+	arn, e := ToArn(p.Arn)
+	if e != nil {
+		return nil, e
+	}
 	return &model.ManagedPolicyDetail{
 		Id:               aws.ToString(p.PolicyId),
 		Name:             aws.ToString(p.PolicyName),
 		Path:             aws.ToString(p.Path),
-		Arn:              aws.ToString(p.Arn),
+		Arn:              arn,
 		AttachmentCount:  aws.ToInt32(p.AttachmentCount),
 		DefaultVersionId: aws.ToString(p.DefaultVersionId),
 		Description:      aws.ToString(p.Description),

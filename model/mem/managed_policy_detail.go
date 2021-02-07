@@ -65,6 +65,6 @@ func (m *ManagedPolicyDetailModelMem) Insert(ctx context.Context,
 			model.ManagedPolicyDetailAlreadyExists, p.Id)
 	}
 	m.id2Policy[p.Id] = p
-	m.arn2Policy[p.Arn] = p
+	m.arn2Policy[p.Arn.String()] = p
 	return nil
 }

@@ -5,20 +5,28 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
 
-func ToAttachedPolicy(a *types.AttachedPolicy) *model.AttachedPolicy {
+func ToAttachedPolicy(a *types.AttachedPolicy) (*model.AttachedPolicy, error) {
 	if a == nil {
-		return nil
+		return nil, nil
+	}
+	arn, e := ToArn(a.PolicyArn)
+	if e != nil {
+		return nil, e
 	}
 	return &model.AttachedPolicy{
-		Arn:  a.PolicyArn,
+		Arn:  arn,
 		Name: a.PolicyName,
-	}
+	}, nil
 }
 
-func ToAttachedPolicies(a []types.AttachedPolicy) []*model.AttachedPolicy {
+func ToAttachedPolicies(a []types.AttachedPolicy) ([]*model.AttachedPolicy, error) {
 	res := make([]*model.AttachedPolicy, 0, len(a))
 	for _, p := range a {
-		res = append(res, ToAttachedPolicy(&p))
+		ap, e := ToAttachedPolicy(&p)
+		if e != nil {
+			return nil, e
+		}
+		res = append(res, ap)
 	}
-	return res
+	return res, nil
 }

@@ -6,21 +6,33 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
 
-func ToInstanceProfile(i types.InstanceProfile) *model.InstanceProfile {
+func ToInstanceProfile(i types.InstanceProfile) (*model.InstanceProfile, error) {
+	arn, e := ToArn(i.Arn)
+	if e != nil {
+		return nil, e
+	}
+	roles, e := ToRoles(i.Roles)
+	if e != nil {
+		return nil, e
+	}
 	return &model.InstanceProfile{
-		Arn:        aws.ToString(i.Arn),
+		Arn:        arn,
 		CreateDate: aws.ToTime(i.CreateDate),
 		Id:         aws.ToString(i.InstanceProfileId),
 		Name:       aws.ToString(i.InstanceProfileName),
 		Path:       aws.ToString(i.Path),
-		Roles:      ToRoles(i.Roles),
-	}
+		Roles:      roles,
+	}, nil
 }
 
-func ToInstanceProfiles(i []types.InstanceProfile) []*model.InstanceProfile {
+func ToInstanceProfiles(i []types.InstanceProfile) ([]*model.InstanceProfile, error) {
 	res := make([]*model.InstanceProfile, 0, len(i))
 	for _, a := range i {
-		res = append(res, ToInstanceProfile(a))
+		ip, e := ToInstanceProfile(a)
+		if e != nil {
+			return nil, e
+		}
+		res = append(res, ip)
 	}
-	return res
+	return res, nil
 }
