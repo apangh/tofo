@@ -6,7 +6,11 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
 
-func ToUserDetail(user types.UserDetail) *model.UserDetail {
+func ToUserDetail(user types.UserDetail) (*model.UserDetail, error) {
+	policies, e := ToInlinePolicyDetails(user.UserPolicyList)
+	if e != nil {
+		return nil, e
+	}
 	return &model.UserDetail{
 		Id:         aws.ToString(user.UserId),
 		Name:       aws.ToString(user.UserName),
@@ -17,7 +21,7 @@ func ToUserDetail(user types.UserDetail) *model.UserDetail {
 		PermissionsBoundary: ToAttachedPermissionsBoundary(
 			user.PermissionsBoundary),
 		ManagedPolicies: ToAttachedPolicies(user.AttachedManagedPolicies),
-		Policies:        ToInlinePolicyDetails(user.UserPolicyList),
+		Policies:        policies,
 		Groups:          ToAttachedGroups(user.GroupList),
-	}
+	}, nil
 }

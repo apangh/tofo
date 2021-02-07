@@ -6,7 +6,12 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
 
-func ToGroupDetail(g types.GroupDetail) *model.GroupDetail {
+func ToGroupDetail(g types.GroupDetail) (*model.GroupDetail, error) {
+	policies, e := ToInlinePolicyDetails(g.GroupPolicyList)
+	if e != nil {
+		return nil, e
+	}
+
 	return &model.GroupDetail{
 		Id:              aws.ToString(g.GroupId),
 		Name:            aws.ToString(g.GroupName),
@@ -14,6 +19,6 @@ func ToGroupDetail(g types.GroupDetail) *model.GroupDetail {
 		Arn:             aws.ToString(g.Arn),
 		CreateDate:      aws.ToTime(g.CreateDate),
 		ManagedPolicies: ToAttachedPolicies(g.AttachedManagedPolicies),
-		Policies:        ToInlinePolicyDetails(g.GroupPolicyList),
-	}
+		Policies:        policies,
+	}, nil
 }
