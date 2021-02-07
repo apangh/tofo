@@ -13,7 +13,11 @@ type GroupDetailRecorder struct {
 }
 
 func (r *GroupDetailRecorder) Do(ctx context.Context, g types.GroupDetail) error {
-	return r.orm.GroupDetailModel.Insert(ctx, recorder.ToGroupDetail(g))
+	p, e := recorder.ToGroupDetail(g)
+	if e != nil {
+		return e
+	}
+	return r.orm.GroupDetailModel.Insert(ctx, p)
 }
 
 type RoleDetailRecorder struct {
@@ -21,7 +25,11 @@ type RoleDetailRecorder struct {
 }
 
 func (r *RoleDetailRecorder) Do(ctx context.Context, rd types.RoleDetail) error {
-	return r.orm.RoleDetailModel.Insert(ctx, recorder.ToRoleDetail(rd))
+	d, e := recorder.ToRoleDetail(rd)
+	if e != nil {
+		return e
+	}
+	return r.orm.RoleDetailModel.Insert(ctx, d)
 }
 
 type ManagedPolicyDetailRecorder struct {
@@ -29,7 +37,11 @@ type ManagedPolicyDetailRecorder struct {
 }
 
 func (r *ManagedPolicyDetailRecorder) Do(ctx context.Context, p types.ManagedPolicyDetail) error {
-	return r.orm.ManagedPolicyDetailModel.Insert(ctx, recorder.ToManagedPolicyDetail(p))
+	o, e := recorder.ToManagedPolicyDetail(p)
+	if e != nil {
+		return e
+	}
+	return r.orm.ManagedPolicyDetailModel.Insert(ctx, o)
 }
 
 type UserDetailRecorder struct {
@@ -37,7 +49,11 @@ type UserDetailRecorder struct {
 }
 
 func (r *UserDetailRecorder) Do(ctx context.Context, u types.UserDetail) error {
-	return r.orm.UserDetailModel.Insert(ctx, recorder.ToUserDetail(u))
+	d, e := recorder.ToUserDetail(u)
+	if e != nil {
+		return e
+	}
+	return r.orm.UserDetailModel.Insert(ctx, d)
 }
 
 type GroupRecorder struct {

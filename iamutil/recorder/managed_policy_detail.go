@@ -12,7 +12,12 @@ type ManagedPolicyDetailRecorder struct {
 	Orm *model.ORM
 }
 
-func ToManagedPolicyDetail(p types.ManagedPolicyDetail) *model.ManagedPolicyDetail {
+func ToManagedPolicyDetail(p types.ManagedPolicyDetail) (
+	*model.ManagedPolicyDetail, error) {
+	versions, e := ToPolicyVersions(p.PolicyVersionList)
+	if e != nil {
+		return nil, e
+	}
 	return &model.ManagedPolicyDetail{
 		Id:               aws.ToString(p.PolicyId),
 		Name:             aws.ToString(p.PolicyName),
@@ -24,15 +29,17 @@ func ToManagedPolicyDetail(p types.ManagedPolicyDetail) *model.ManagedPolicyDeta
 		IsAttachable:     p.IsAttachable,
 		CreateDate:       aws.ToTime(p.CreateDate),
 		UpdateDate:       aws.ToTime(p.UpdateDate),
-
-		Versions: ToPolicyVersions(p.PolicyVersionList),
+		Versions:         versions,
 		PermissionsBoundaryUsageCount: aws.ToInt32(
 			p.PermissionsBoundaryUsageCount),
-	}
+	}, nil
 }
 
 func (r *ManagedPolicyDetailRecorder) Do(ctx context.Context,
 	policyDetail types.ManagedPolicyDetail) error {
-	return r.Orm.ManagedPolicyDetailModel.Insert(ctx,
-		ToManagedPolicyDetail(policyDetail))
+	d, e := ToManagedPolicyDetail(policyDetail)
+	if e != nil {
+		return e
+	}
+	return r.Orm.ManagedPolicyDetailModel.Insert(ctx, d)
 }

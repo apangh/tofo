@@ -30,7 +30,7 @@ type RoleDetail struct {
 	Tags                map[string]string
 	PermissionsBoundary *AttachedPermissionsBoundary
 
-	AssumeRolePolicyDocument string
+	AssumeRolePolicyDocument JsonPolicyDocument
 	Description              string
 	MaxSessionDuration       *int32
 	LastUsed                 *RoleLastUsed
