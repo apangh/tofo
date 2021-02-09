@@ -11,4 +11,5 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.1.0
 	github.com/aws/smithy-go v1.0.0
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
+	github.com/terraform-providers/terraform-provider-aws v1.60.0
 )

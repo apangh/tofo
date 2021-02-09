@@ -2,5 +2,5 @@ package model
 
 type InlinePolicyDetail struct {
 	Name     string
-	Document JsonPolicyDocument
+	Document *JsonPolicyDocument
 }
