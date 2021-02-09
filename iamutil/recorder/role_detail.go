@@ -7,7 +7,7 @@ import (
 )
 
 func ToRoleDetail(role types.RoleDetail) (*model.RoleDetail, error) {
-	s, e := ToJsonPolicyDocument(aws.ToString(role.AssumeRolePolicyDocument))
+	s, e := ToIamPolicyDocument(aws.ToString(role.AssumeRolePolicyDocument))
 	if e != nil {
 		return nil, e
 	}

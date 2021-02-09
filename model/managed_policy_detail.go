@@ -26,7 +26,7 @@ type ManagedPolicyDetail struct {
 type PolicyVersion struct {
 	IsDefaultVersion bool
 	CreateDate       time.Time
-	Document         *JsonPolicyDocument
+	Document         *IamPolicyDocument
 	VersionId        string
 }
 
