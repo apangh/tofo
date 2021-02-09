@@ -61,11 +61,12 @@ func ToIamPolicyDocument(s string) (*model.IamPolicyDocument, error) {
 		})
 	}
 
-	return &model.IamPolicyDocument{
+	doc := &model.IamPolicyDocument{
 		Version:    pd.Version,
 		Id:         pd.Version,
 		Statements: stmt,
-	}, nil
+	}
+	return doc, nil
 }
 func (pr *JsonIamPolicyResources) UnmarshalJSON(b []byte) error {
 	var data interface{}
