@@ -7,7 +7,7 @@ import (
 )
 
 func ToInlinePolicyDetail(a types.PolicyDetail) (*model.InlinePolicyDetail, error) {
-	s, e := ToJsonPolicyDocument(aws.ToString(a.PolicyDocument))
+	s, e := ToIamPolicyDocument(aws.ToString(a.PolicyDocument))
 	if e != nil {
 		return nil, e
 	}

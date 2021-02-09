@@ -7,7 +7,7 @@ import (
 )
 
 func toPolicyVersion(pv types.PolicyVersion) (*model.PolicyVersion, error) {
-	s, e := ToJsonPolicyDocument(aws.ToString(pv.Document))
+	s, e := ToIamPolicyDocument(aws.ToString(pv.Document))
 	if e != nil {
 		return nil, e
 	}
