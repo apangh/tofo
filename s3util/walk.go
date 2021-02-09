@@ -83,30 +83,36 @@ func Walk(ctx context.Context, client *s3.Client, orm *model.ORM) error {
 		if e != nil {
 			return e
 		}
-		if v.Status == "" {
-			// Bucket has no versioning enabled
-			e = ListObjects(ctx, client, bucketName, &LogObject{})
-			if e != nil {
-				return e
-			}
-		} else {
+		if v.Status != "" {
 			glog.Infof("Bucket version status: %s", v.Status)
-			e = ListObjectVersions(ctx, client, bucketName,
-				&LogObjectVersion{})
-			if e != nil {
-				return e
-			}
 		}
 
-		// multi-parts
-		cb := LogPartInMultiPartUpload{
-			client: client,
-			bucket: bucketName,
-		}
-		e = ListMultiPartUploads(ctx, client, bucketName, &cb)
-		if e != nil {
-			return e
-		}
+		/*
+			if v.Status == "" {
+				// Bucket has no versioning enabled
+				e = ListObjects(ctx, client, bucketName, &LogObject{})
+				if e != nil {
+					return e
+				}
+			} else {
+				glog.Infof("Bucket version status: %s", v.Status)
+				e = ListObjectVersions(ctx, client, bucketName,
+					&LogObjectVersion{})
+				if e != nil {
+					return e
+				}
+			}
+
+			// multi-parts
+			cb := LogPartInMultiPartUpload{
+				client: client,
+				bucket: bucketName,
+			}
+			e = ListMultiPartUploads(ctx, client, bucketName, &cb)
+			if e != nil {
+				return e
+			}
+		*/
 	}
 
 	return nil
