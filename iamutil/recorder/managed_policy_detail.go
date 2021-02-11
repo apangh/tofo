@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/apangh/tofo/model"
+	commonRecorder "github.com/apangh/tofo/recorder"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
@@ -18,7 +19,7 @@ func ToManagedPolicyDetail(p types.ManagedPolicyDetail) (
 	if e != nil {
 		return nil, e
 	}
-	arn, e := ToArn(p.Arn)
+	arn, e := commonRecorder.ToArn(p.Arn)
 	if e != nil {
 		return nil, e
 	}

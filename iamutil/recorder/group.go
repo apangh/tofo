@@ -2,12 +2,13 @@ package recorder
 
 import (
 	"github.com/apangh/tofo/model"
+	commonRecorder "github.com/apangh/tofo/recorder"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
 
 func ToGroup(group types.Group) (*model.Group, error) {
-	arn, e := ToArn(group.Arn)
+	arn, e := commonRecorder.ToArn(group.Arn)
 	if e != nil {
 		return nil, e
 	}

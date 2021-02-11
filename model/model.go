@@ -13,6 +13,7 @@ type ORM struct {
 	RoleModel                RoleModel
 	AccountModel             AccountModel
 	BucketModel              BucketModel
+	TrailModel               TrailModel
 }
 
 func (o *ORM) Dump(ctx context.Context) {
@@ -26,4 +27,5 @@ func (o *ORM) Dump(ctx context.Context) {
 	o.RoleModel.Dump(ctx)
 	o.AccountModel.Dump(ctx)
 	o.BucketModel.Dump(ctx)
+	o.TrailModel.Dump(ctx)
 }

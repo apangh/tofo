@@ -14,5 +14,6 @@ func NewORM() (*model.ORM, error) {
 		UserModel:                NewUserModel(),
 		AccountModel:             NewAccountModel(),
 		BucketModel:              NewBucketModel(),
+		TrailModel:               NewTrailModel(),
 	}, nil
 }
