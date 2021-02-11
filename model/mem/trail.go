@@ -21,12 +21,28 @@ func NewTrailModel() model.TrailModel {
 	}
 }
 
-func (m *TrailModelMem) Dump(ctx context.Context) {
+type TrailPrintCB struct{}
+
+var _ model.TrailCB = (*TrailPrintCB)(nil)
+
+func (t *TrailPrintCB) Do(ctx context.Context, trail *model.Trail) error {
+	fmt.Printf("Trail[%s]:%+v\n", trail.Name, trail)
+	return nil
+}
+
+func (m *TrailModelMem) Dump(ctx context.Context) error {
+	return m.Scan(ctx, &TrailPrintCB{})
+}
+
+func (m *TrailModelMem) Scan(ctx context.Context, cb model.TrailCB) error {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
-	for k, v := range m.name2Trail {
-		fmt.Printf("Trail[%s]:%+v\n", k, v)
+	for _, v := range m.name2Trail {
+		if e := cb.Do(ctx, v); e != nil {
+			return e
+		}
 	}
+	return nil
 }
 
 func (m *TrailModelMem) Lookup(ctx context.Context, name string) (*model.Trail, error) {
