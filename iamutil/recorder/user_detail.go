@@ -2,6 +2,7 @@ package recorder
 
 import (
 	"github.com/apangh/tofo/model"
+	commonRecorder "github.com/apangh/tofo/recorder"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
@@ -11,7 +12,7 @@ func ToUserDetail(user types.UserDetail) (*model.UserDetail, error) {
 	if e != nil {
 		return nil, e
 	}
-	arn, e := ToArn(user.Arn)
+	arn, e := commonRecorder.ToArn(user.Arn)
 	if e != nil {
 		return nil, e
 	}

@@ -2,12 +2,13 @@ package recorder
 
 import (
 	"github.com/apangh/tofo/model"
+	commonRecorder "github.com/apangh/tofo/recorder"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
 
 func ToInstanceProfile(i types.InstanceProfile) (*model.InstanceProfile, error) {
-	arn, e := ToArn(i.Arn)
+	arn, e := commonRecorder.ToArn(i.Arn)
 	if e != nil {
 		return nil, e
 	}

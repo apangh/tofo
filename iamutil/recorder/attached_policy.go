@@ -2,6 +2,7 @@ package recorder
 
 import (
 	"github.com/apangh/tofo/model"
+	commonRecorder "github.com/apangh/tofo/recorder"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
 
@@ -9,7 +10,7 @@ func ToAttachedPolicy(a *types.AttachedPolicy) (*model.AttachedPolicy, error) {
 	if a == nil {
 		return nil, nil
 	}
-	arn, e := ToArn(a.PolicyArn)
+	arn, e := commonRecorder.ToArn(a.PolicyArn)
 	if e != nil {
 		return nil, e
 	}

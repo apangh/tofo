@@ -46,7 +46,7 @@ func (m *AccountModelMem) Insert(ctx context.Context, a *model.Account) error {
 	defer m.mutex.Unlock()
 	_, ok := m.id2Account[a.Id]
 	if ok {
-		return fmt.Errorf("%w: Account %s already exists",
+		return fmt.Errorf("%w: Account '%s' already exists",
 			model.AccountAlreadyExists, a.Id)
 	}
 	m.id2Account[a.Id] = a
