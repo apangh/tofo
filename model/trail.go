@@ -28,8 +28,13 @@ var (
 	TrailNotFound      = errors.New("TrailNotFound")
 )
 
+type TrailCB interface {
+	Do(ctx context.Context, t *Trail) error
+}
+
 type TrailModel interface {
 	Insert(ctx context.Context, t *Trail) error
 	Lookup(ctx context.Context, name string) (*Trail, error)
-	Dump(ctx context.Context)
+	Dump(ctx context.Context) error
+	Scan(ctx context.Context, cb TrailCB) error
 }
