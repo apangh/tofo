@@ -1,4 +1,4 @@
-module github.com/tofo/logger
+module github.com/apangh/tofo/logger
 
 go 1.16
 
