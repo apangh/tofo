@@ -1,4 +1,4 @@
-# Go parameters                                                                           
+# Go parameters
 GOCMD=go
 GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
@@ -7,7 +7,7 @@ GOGET=$(GOCMD) get
 GOVET=$(GOCMD) vet
 GOINSTALL=$(GOCMD) install
 MOCKGEN=$(GOPATH)/bin/mockgen
-                                                                                          
+
 mod:
 	@go mod download
 
