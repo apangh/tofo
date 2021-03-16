@@ -3,8 +3,8 @@ module github.com/apangh/tofo
 go 1.15
 
 require (
-	github.com/apangh/salt v0.0.0-20210315072225-4553614c0817
-	github.com/apangh/tofo/logger v0.0.0-20210313080530-b44a06b18aa8
+	github.com/apangh/salt v0.0.0-20210316052613-fd156fda72c8
+	github.com/apangh/tofo/logger v0.0.0-20210315075222-04e48cb3371d
 	github.com/aws/aws-sdk-go-v2 v1.2.1
 	github.com/aws/aws-sdk-go-v2/config v1.1.2
 	github.com/aws/aws-sdk-go-v2/service/cloudtrail v1.1.2

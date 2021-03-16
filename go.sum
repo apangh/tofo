@@ -1,8 +1,8 @@
 github.com/apangh/salt v0.0.0-20210308055049-76de9a58f1af/go.mod h1:sYWPob1OHP36t57Pl5i9IMjp011tKpEdI6vsPyHl6tA=
-github.com/apangh/salt v0.0.0-20210315072225-4553614c0817 h1:6xC50GxyA+BK2MfQ7SkhWsSHfr9ZOXW3KlQ0Dfq1Ggg=
-github.com/apangh/salt v0.0.0-20210315072225-4553614c0817/go.mod h1:ZZLp4K+Q2FbJP9MzUpLcaAVv1O1zayW+/6G06w5wOuc=
-github.com/apangh/tofo/logger v0.0.0-20210313080530-b44a06b18aa8 h1:IJNktZ0ert0dCPpm6c6mNrn/FfXe1fXzlZCYRlFAwxc=
-github.com/apangh/tofo/logger v0.0.0-20210313080530-b44a06b18aa8/go.mod h1:E1BguWx0oGtcTEgS+ikS9YuqJYzJZew1R8VAjW8jF+k=
+github.com/apangh/salt v0.0.0-20210316052613-fd156fda72c8 h1:WH+Rb1Nj/pPBZdzVOyVFk9wU6xghbSSYZ/VaRs7ndCU=
+github.com/apangh/salt v0.0.0-20210316052613-fd156fda72c8/go.mod h1:ZZLp4K+Q2FbJP9MzUpLcaAVv1O1zayW+/6G06w5wOuc=
+github.com/apangh/tofo/logger v0.0.0-20210315075222-04e48cb3371d h1:ym68ZWjUkCjH2D2xC1YHMyXPNPGzgBwGeucfMqIsBZE=
+github.com/apangh/tofo/logger v0.0.0-20210315075222-04e48cb3371d/go.mod h1:E1BguWx0oGtcTEgS+ikS9YuqJYzJZew1R8VAjW8jF+k=
 github.com/aws/aws-sdk-go-v2 v1.2.1 h1:055XAi+MtmhyYX161p+jWRibkCb9YpI2ymXZiW1dwVY=
 github.com/aws/aws-sdk-go-v2 v1.2.1/go.mod h1:hTQc/9pYq5bfFACIUY9tc/2SYWd9Vnmw+testmuQeRY=
 github.com/aws/aws-sdk-go-v2/config v1.1.2 h1:H2r6cwMvvINFpEC55Y7jcNaR/oc7zYIChrG2497wmBI=
