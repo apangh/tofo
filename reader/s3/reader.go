@@ -48,14 +48,20 @@ func (r *s3Reader) Do(ctx context.Context, i reader.Input) (reader.Output, error
 		awslogger.LogAPIError(ctx, e, "Get object %s/%s", r.bucket, r.key)
 		logger.Errorf(ctx, "Get object %s/%s failed - elapsed: %+v", r.bucket,
 			r.key, elapsed)
-		return nil, backtrace.NewErr(e)
+		e1 := backtrace.NewErr(e)
+		i.RegisterError(e1)
+		return nil, e1
 	}
 	readSize, e := i.GetBufs().ReadAll(ctx, o.Body)
+	if e != nil {
+		i.RegisterError(e)
+		return nil, e
+	}
 	oo := i.MakeOutput(readSize, elapsed)
 	if om, ok := oo.(reader.OutputWithMetadata); ok {
 		om.SetMetadata(o.Metadata)
 	}
-	return oo, e
+	return oo, nil
 }
 
 // GetSize return the size of the s3 object
