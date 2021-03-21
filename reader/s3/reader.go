@@ -49,15 +49,19 @@ func (r *s3Reader) Do(ctx context.Context, i reader.Input) (reader.Output, error
 		logger.Errorf(ctx, "Get object %s/%s failed - elapsed: %+v", r.bucket,
 			r.key, elapsed)
 		e1 := backtrace.NewErr(e)
-		i.RegisterError(e1)
+		i.RegisterError(ctx, e1)
 		return nil, e1
 	}
 	readSize, e := i.GetBufs().ReadAll(ctx, o.Body)
 	if e != nil {
-		i.RegisterError(e)
+		i.RegisterError(ctx, e)
 		return nil, e
 	}
-	oo := i.MakeOutput(readSize, elapsed)
+	oo, e := i.MakeOutput(ctx, readSize, elapsed)
+	if e != nil {
+		i.RegisterError(ctx, e)
+		return nil, e
+	}
 	if om, ok := oo.(reader.OutputWithMetadata); ok {
 		om.SetMetadata(o.Metadata)
 	}
