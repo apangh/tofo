@@ -2,6 +2,7 @@ package s3reader
 
 import (
 	"context"
+	"io"
 	"strconv"
 	"time"
 
@@ -53,7 +54,7 @@ func (r *s3Reader) Do(ctx context.Context, i reader.Input) (reader.Output, error
 		return nil, e1
 	}
 	readSize, e := i.GetBufs().ReadAll(ctx, o.Body)
-	if e != nil {
+	if e != nil && e != io.EOF {
 		i.RegisterError(ctx, e)
 		return nil, e
 	}
