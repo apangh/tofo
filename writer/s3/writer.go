@@ -39,19 +39,20 @@ func (w *s3Writer) do(ctx context.Context, i writer.Input) (writer.Output, error
 	for k, v := range i.GetTags() {
 		s3tags.Add(k, v)
 	}
+	key := i.GetKey()
 	params := s3.PutObjectInput{
 		Bucket:   aws.String(w.bucket),
-		Key:      aws.String(i.GetKey()),
+		Key:      aws.String(key),
 		Body:     mpool.NewBufsReadSeeker(i.GetBufs()),
 		Metadata: i.GetMetadata(),
 		Tagging:  aws.String(s3tags.Encode()),
 	}
+	size := i.GetBufs().GetSize()
 	o, e := w.client.PutObject(ctx, &params)
 	elapsed := time.Since(start)
 	if e != nil {
-		awslogger.LogAPIError(ctx, e, "Put object %s/%s", w.bucket, i.GetKey())
-		logger.Errorf(ctx, "Put object %s/%s failed - elapsed: %+v", w.bucket, i.GetKey(),
-			elapsed)
+		awslogger.LogAPIError(ctx, e, "Put object %s/%s", w.bucket, key)
+		logger.Errorf(ctx, "Put object %s/%s failed - elapsed: %+v", w.bucket, key, elapsed)
 		return nil, e
 	}
 	output, e := i.MakeOutput(ctx, elapsed)
@@ -60,8 +61,7 @@ func (w *s3Writer) do(ctx context.Context, i writer.Input) (writer.Output, error
 	}
 	requestId, _ := middleware.GetRequestIDMetadata(o.ResultMetadata)
 	logger.Infof(ctx, "Put object %s/%s, requestID: %s, elapsed: %+v, throughput: %.2f B/s",
-		w.bucket, i.GetKey(), requestId, elapsed,
-		float64(i.GetBufs().GetSize())/elapsed.Seconds())
+		w.bucket, key, requestId, elapsed, float64(size)/elapsed.Seconds())
 	return output, nil
 }
 
